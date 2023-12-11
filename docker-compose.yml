@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  postgresdb:
+    image: postgres
+    environment:
+      - POSTGRES_USER=aduser
+      - POSTGRES_PASSWORD=adpassword
+      - POSTGRES_DB=addatabase
+    ports:
+      - 5432:5432
+    volumes:
+      - db:/var/lib/postgresql/data
+      - ./database/SQL/:/docker-entrypoint-initdb.d/
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@example.com
+      - PGADMIN_DEFAULT_PASSWORD=adminpassword
+    ports:
+      - 8080:80
+    depends_on:
+      - postgresdb
+
+  app:
+    depends_on:
+      - postgresdb
+    build: ./
+    ports:
+      - 3000:3000
+    environment:
+      - DB_HOST=postgresdb
+      - DB_USER=user
+      - DB_PASSWORD=password
+      - DB_NAME=database
+      - DB_PORT=5432
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./src:/usr/src/app/src
+
+volumes:
+  db:
