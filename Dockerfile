@@ -8,8 +8,7 @@ WORKDIR /usr/src/app
 COPY ["package.json", "package-lock.json*", "./"]
 
 # Install dependencies
-RUN npm install --production=false
-
+RUN npm install 
 # Copy the rest of the application files
 COPY . .
 
@@ -31,4 +30,6 @@ COPY --from=builder /usr/src/app/node_modules ./node_modules
 EXPOSE 3000
 
 # Run the application
+USER node
+
 CMD ["node", "./dist/app.js"]

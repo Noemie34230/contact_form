@@ -34,7 +34,11 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 app.get('/', (req, res) => {
     // Utilisez le nom du fichier Pug sans extension
-    res.render('register', { pageTitle: 'register' });
+    res.render('home', { pageTitle: 'home' });
+});
+app.get('/contact', (req, res) => {
+    // Utilisez le nom du fichier Pug sans extension
+    res.render('contact', { pageTitle: 'contact' });
 });
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
