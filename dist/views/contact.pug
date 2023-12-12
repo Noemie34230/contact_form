@@ -1,0 +1,43 @@
+block styles
+      link(rel="stylesheet", type="text/css", href="./styles/home.css")
+
+block content 
+
+    h1 Laissez-nous un message
+    p(class="paragraphe") Bienvenue sur notre formulaire de contact ! Nous sommes ravis de vous entendre. Pour nous faire part de vos questions, commentaires ou demandes, veuillez prendre un moment pour saisir votre message ci-dessous. N'hésitez pas à fournir autant de détails que possible afin que nous puissions vous aider de la manière la plus efficace. Nous sommes impatients de vous répondre et de vous offrir le meilleur service possible. Merci de prendre le temps de nous partager vos pensées !
+          form(action='/submit-register' class="formulaire")
+            label(for='firstname' class='label') First name :
+            input(type='text', id='firstname', name='firstname', required class="input", value= getfirstname, placeholder='First name')
+            if messageErrorFirstname
+                  span(class='error')= messageErrorFirstname
+
+            label(for='lastname' class='label') Last name:
+            input(type='text', id='lastname', name='lastname', required class="input", value=getlastname, placeholder='Last name')
+            if messageErrorLastname
+                  span(class='error')= messageErrorLastname
+
+         
+            label(for='email' class='label') Email :
+            input(type='email', id='email', name='email', required class="input", value= getemail, placeholder='Email' )
+            if messageErrorEmail
+                  span(class='error')= messageErrorEmail
+
+            label(for='confirmation' class='label') Confirmation email:
+            input(type='email', id='confirmation', name='confirmation', required class="input", value= getconfirmation, placeholder='Confirmation email' )
+            if messageErrorConfirmation
+                  span(class='error')= messageErrorConfirmation
+
+            label(for='password' class='label') Password:
+            input(type='password', id='password', name='password', required class="input", value= getpassword, placeholder='Use a special character, and a uppercase. The password must a length max 12 characters')
+            if messageErrorPassword
+                  span(class='error')= messageErrorPassword
+
+            label(for='message', class='label') Message:
+            input(type='text', id='message', name='message', required class='input', value=getMessage, placeholder='Write a message, 150 characters max')
+            if messageErrorMessage
+                  span(class='error')= messageErrorMessage
+
+
+
+
+            button(type='submit' class='button') Submit
