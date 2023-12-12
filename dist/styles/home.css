@@ -35,6 +35,9 @@ body {
 
 .input{
     width: 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .error{
@@ -42,6 +45,12 @@ body {
 }
 
 .button{
+    margin-top: 5vh;
+    width: 50%;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background-color: #0616A8;
     color: white;
 }

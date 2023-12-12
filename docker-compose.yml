@@ -6,11 +6,10 @@ services:
     environment:
       - POSTGRES_USER=aduser
       - POSTGRES_PASSWORD=adpassword
-      - POSTGRES_DB=addatabase
+      - POSTGRES_DB=adatabase
     ports:
-      - 5432:5432
+      - 5433:5432
     volumes:
-      - db:/var/lib/postgresql/data
       - ./database/SQL/:/docker-entrypoint-initdb.d/
 
   pgadmin:
@@ -20,26 +19,15 @@ services:
       - PGADMIN_DEFAULT_PASSWORD=adminpassword
     ports:
       - 8080:80
-    depends_on:
-      - postgresdb
+
 
   app:
-    depends_on:
-      - postgresdb
     build: ./
     ports:
       - 3000:3000
-    environment:
-      - DB_HOST=postgresdb
-      - DB_USER=user
-      - DB_PASSWORD=password
-      - DB_NAME=database
-      - DB_PORT=5432
-    stdin_open: true
-    tty: true
+  
     volumes:
-      - ./src:/usr/src/app/src
+      - ./dist:/usr/dist/app/dist
 
-volumes:
-  db:
+
   

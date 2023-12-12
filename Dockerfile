@@ -8,18 +8,18 @@ WORKDIR /usr/src/app
 COPY ["package.json", "package-lock.json*", "./"]
 
 # Install dependencies
-RUN npm install 
+RUN npm install && \npm install typescript@latest
 # Copy the rest of the application files
 COPY . .
 
 # Build the TypeScript application
 RUN npm run build
-
+    
 # Stage 2: Run the application
 FROM node:lts-alpine
 
 # Set the working directory inside the container
-WORKDIR /usr/dist/app
+WORKDIR /usr/dist/app   
 
 # Copy only necessary files from the previous stage
 COPY --from=builder /usr/src/app/dist ./dist
