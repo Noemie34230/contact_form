@@ -4,9 +4,9 @@ services:
   postgresdb:
     image: postgres
     environment:
-      - POSTGRES_USER=aduser
-      - POSTGRES_PASSWORD=adpassword
-      - POSTGRES_DB=adatabase
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=database
     ports:
       - 5433:5432
     volumes:
@@ -20,14 +20,9 @@ services:
     ports:
       - 8080:80
 
-
-  app:
+  contact_form:
     build: ./
     ports:
       - 3000:3000
-  
     volumes:
       - ./dist:/usr/dist/app/dist
-
-
-  

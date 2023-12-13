@@ -1,40 +1,47 @@
 body {
-    background: linear-gradient(to bottom, rgba(6, 119, 168, 0.8), rgba(20, 77, 226, 0.3));
+    background: linear-gradient(to bottom, rgba(3, 52, 73, 0.8), rgba(2, 51, 177, 0.3));
     display : flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
+    text-align: center;
     margin-left: auto;
     margin-right: auto;
     padding: 30px;
+    font-family: sans-serif;
 }
 
-.h1{
-    text-align: center;
-    font-family: Georgia, 'Times New Roman', Times, serif;
-    font-size: 32rem;
+h1{
+    font-size: 35px;
+    color: white;
 }
 ::placeholder{
     color:gray;
+    font-size: 8px;
 }
 
 .formulaire{
     display: flex;
     flex-direction: column;
     width: 70rem;
+    align-items: center;
 }
 
 .paragraphe{
     text-align: center;
-    width: 70rem;
+    color: white
 }
 
 .label{
-    width: 70%;
+    width: 500px;
+    font-size: px;
     margin-top: 20px;
+    font-weight: bold;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
 
 .input{
-    width: 70%;
+    box-shadow: 2px 2px 2px 2px rgba(27, 113, 153, 0.8);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -44,14 +51,19 @@ body {
     color : red;
 }
 
-.button{
-    margin-top: 5vh;
-    width: 50%;
+.button{ 
+    margin-top: 10vh;
     border-radius: 25px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #0616A8;
+    width: 300px;
+    height: 35px;
+    background-color: red;
+    box-shadow: 5px 5px 2px 2px rgba(31, 127, 172, 0.8);
     color: white;
+    font-size: 25px;
+    text-align: center;  
+}
+button:hover{ 
+    background-color: rgb(184, 0, 0);
+    box-shadow: none;
 }
 
