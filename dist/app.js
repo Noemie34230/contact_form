@@ -40,51 +40,74 @@ const path = __importStar(require("path"));
 const pg_1 = require("pg");
 const app = (0, express_1.default)();
 const port = 3000;
-// Configuration de la connexion à la base de données (remplacez ces informations par les vôtres)
-const dbConfig = {
-    user: 'aduser',
-    password: 'adpassword',
-    database: 'adatabase',
-    host: 'postgresdb',
-    port: 5433, // Port par défaut de PostgreSQL
-};
-// Création d'un nouveau client pour se connecter à la base de données
-const client = new pg_1.Client(dbConfig);
-function insertUserData(User_Surname, User_First_name, User_Nickname, User_Email, User_Password) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            // Connexion au client PostgreSQL
-            yield client.connect();
-            // Requête SQL pour insérer les données dans la table
-            const insertQuery = `INSERT INTO formuser (User_Surname, User_First_Name, User_Nickname, User_Email, User_Password)
-                         VALUES ($1, $2, $3, $4, $5)`;
-            // Paramètres à passer à la requête
-            const values = [User_Surname, User_First_name, User_Nickname, User_Email, User_Password];
-            // Exécution de la requête d'insertion
-            yield client.query(insertQuery, values);
-            console.log('Client créé avec succès');
-        }
-        catch (error) {
-            console.error('Erreur lors de l\'insertion des données :', error);
-        }
-        finally {
-            // Fermeture de la connexion à la base de données
-            yield client.end();
-        }
-    });
-}
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 // Définit le dossier "styles" pour les fichiers CSS
 app.use('/styles', express_1.default.static(path.join(__dirname, 'styles')));
+app.use(express_1.default.json());
+app.use(express_1.default.urlencoded({ extended: true }));
 app.get('/', (req, res) => {
-    // Utilise le nom du fichier Pug sans extension
     res.render('home', { pageTitle: 'home' });
 });
 app.get('/contact', (req, res) => {
-    // Utilise le nom du fichier Pug sans extension
     res.render('contact', { pageTitle: 'contact' });
 });
 app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
+    console.log(`Le serveur fonctionne à http://localhost:${port}`);
 });
+const dbConfig = {
+    user: 'user',
+    password: 'password',
+    database: 'database',
+    host: 'postgresdb',
+    port: 5432,
+};
+function insertUserData(User_Surname, User_First_name, User_Email, User_Password, User_Message) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const client = new pg_1.Client(dbConfig);
+        try {
+            yield client.connect();
+            const insertQuery = `INSERT INTO formuser (User_Surname, User_First_Name, User_Email, User_Password, User_Message)
+                         VALUES ($1, $2, $3, $4, $5)`;
+            const values = [User_Surname, User_First_name, User_Email, User_Password, User_Message];
+            yield client.query(insertQuery, values);
+            console.log('Formulaire créé avec succès');
+        }
+        catch (error) {
+            console.error("Erreur lors de l'insertion des données :", error);
+        }
+        finally {
+            yield client.end();
+        }
+    });
+}
+app.post('/submit-register', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const client = new pg_1.Client(dbConfig);
+    try {
+        yield client.connect();
+        const userSurname = req.body.User_Surname;
+        const userFirstName = req.body.User_First_name;
+        const userEmail = req.body.User_Email;
+        const userPassword = req.body.User_Password;
+        const userMessage = req.body.User_Message;
+        const insertQuery = `INSERT INTO formuser (User_Surname, User_First_Name, User_Email, User_Password, User_Message)
+                         VALUES ($1, $2, $3, $4, $5)`;
+        const values = [userSurname, userFirstName, userEmail, userPassword, userMessage];
+        const result = yield client.query(insertQuery, values);
+        if (result.rows.length > 0) {
+            console.log('Donnée formulaire insérée avec succès');
+            res.redirect('/');
+        }
+        else {
+            console.error("Erreur lors de l'insertion des données : Aucune ligne affectée");
+            res.status(500).send("Erreur lors de l'insertion des données");
+        }
+    }
+    catch (error) {
+        console.error("Une erreur s'est produite lors de la connexion :", error);
+        res.status(500).send("Une erreur s'est produite lors de la connexion");
+    }
+    finally {
+        yield client.end();
+    }
+}));
