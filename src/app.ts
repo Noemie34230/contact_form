@@ -7,24 +7,9 @@ const port = 3000;
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
-
-// Définit le dossier "styles" pour les fichiers CSS
 app.use('/styles', express.static(path.join(__dirname, 'styles')));
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-app.get('/', (req: Request, res: Response) => {
-  res.render('home', { pageTitle: 'home' });
-});
-
-app.get('/contact', (req: Request, res: Response) => {
-  res.render('contact', { pageTitle: 'contact' });
-});
-
-app.listen(port, () => {
-  console.log(`Le serveur fonctionne à http://localhost:${port}`);
-});
 
 const dbConfig = {
   user: 'user',
@@ -34,59 +19,37 @@ const dbConfig = {
   port: 5432,
 };
 
-async function insertUserData(
-  User_Surname: string,
-  User_First_name: string,
-  User_Email: string,
-  User_Password: string,
-  User_Message: string
-) {
-  const client = new Client(dbConfig);
+app.get('/', (req: Request, res: Response) => {
+  res.render('home', { pageTitle: 'home' });
+});
 
-  try {
-    await client.connect();
-
-    const insertQuery = `INSERT INTO formuser (User_Surname, User_First_Name, User_Email, User_Password, User_Message)
-                         VALUES ($1, $2, $3, $4, $5)`;
-
-    const values = [User_Surname, User_First_name, User_Email, User_Password, User_Message];
-
-    await client.query(insertQuery, values);
-
-    console.log('Formulaire créé avec succès');
-
-  } catch (error) {
-    console.error("Erreur lors de l'insertion des données :", error);
-  } finally {
-    await client.end();
-  }
-}
+app.get('/contact', (req: Request, res: Response) => {
+  res.render('contact', { pageTitle: 'contact' });
+});
 
 app.post('/submit-register', async (req, res) => {
+  const userFirstName = req.body.user_firstName;
+  const userSurname = req.body.user_surname;
+  const userEmail = req.body.user_email;
+  const userConfirmation = req.body.user_confirmation;
+  const userPassword = req.body.user_password;
+  const userMessage = req.body.user_message;
   const client = new Client(dbConfig);
-
+  console.log(req.body);
+  console.log('Données du formulaire :', userEmail, userPassword, userConfirmation, userSurname, userFirstName, userMessage);
   try {
     await client.connect();
+    const insertQuery = `INSERT INTO formuser 
+    (user_id, user_surname, user_firstName, user_email, user_confirmation, user_password, user_message) 
+    VALUES (DEFAULT, $1::text, $2::text, $3::text, $4::text, $5::text, $6::text, $7::text) RETURNING User_id`;
 
-    const userSurname = req.body.User_Surname;
-    const userFirstName = req.body.User_First_name;
-    const userEmail = req.body.User_Email;
-    const userPassword = req.body.User_Password;
-    const userMessage = req.body.User_Message;
+    const values = [userSurname, userFirstName, userEmail, userConfirmation, userPassword, userMessage];   
+    const result = await client.query(insertQuery, values); 
 
-    const insertQuery = `INSERT INTO formuser (User_Surname, User_First_Name, User_Email, User_Password, User_Message)
-                         VALUES ($1, $2, $3, $4, $5)`;
-
-    const values = [userSurname, userFirstName, userEmail, userPassword, userMessage];
-
-    const result = await client.query(insertQuery, values);
-
-    if (result.rows.length > 0) {
-      console.log('Donnée formulaire insérée avec succès');
-      res.redirect('/');
+    if (result.rowCount !== null && result.rowCount > 0) {
+      res.status(200).send('Inscription réussie !');
     } else {
-      console.error("Erreur lors de l'insertion des données : Aucune ligne affectée");
-      res.status(500).send("Erreur lors de l'insertion des données");
+      res.status(500).send("Erreur lors de l'inscription");
     }
   } catch (error) {
     console.error("Une erreur s'est produite lors de la connexion :", error);
@@ -94,4 +57,8 @@ app.post('/submit-register', async (req, res) => {
   } finally {
     await client.end();
   }
+});
+
+app.listen(port, () => {
+  console.log(`Le serveur fonctionne à http://localhost:${port}`);
 });

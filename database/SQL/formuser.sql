@@ -1,9 +1,9 @@
 CREATE TABLE "formuser" (
-    User_ID SERIAL PRIMARY KEY,
-    User_Surname VARCHAR(50),
-    User_First_Name VARCHAR(50),
-    User_Nickname VARCHAR(50),
-    User_Email VARCHAR(100) UNIQUE,
-    User_Password VARCHAR(100),
-    User_Timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    user_ID SERIAL PRIMARY KEY,
+    user_surname VARCHAR(50),
+    user_firstname VARCHAR(50),
+    user_email VARCHAR(100),
+    user_confirmation VARCHAR(100),
+    user_password VARCHAR(100),
+    user_message VARCHAR(150)
 );

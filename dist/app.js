@@ -42,19 +42,9 @@ const app = (0, express_1.default)();
 const port = 3000;
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
-// Définit le dossier "styles" pour les fichiers CSS
 app.use('/styles', express_1.default.static(path.join(__dirname, 'styles')));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
-app.get('/', (req, res) => {
-    res.render('home', { pageTitle: 'home' });
-});
-app.get('/contact', (req, res) => {
-    res.render('contact', { pageTitle: 'contact' });
-});
-app.listen(port, () => {
-    console.log(`Le serveur fonctionne à http://localhost:${port}`);
-});
 const dbConfig = {
     user: 'user',
     password: 'password',
@@ -62,45 +52,35 @@ const dbConfig = {
     host: 'postgresdb',
     port: 5432,
 };
-function insertUserData(User_Surname, User_First_name, User_Email, User_Password, User_Message) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const client = new pg_1.Client(dbConfig);
-        try {
-            yield client.connect();
-            const insertQuery = `INSERT INTO formuser (User_Surname, User_First_Name, User_Email, User_Password, User_Message)
-                         VALUES ($1, $2, $3, $4, $5)`;
-            const values = [User_Surname, User_First_name, User_Email, User_Password, User_Message];
-            yield client.query(insertQuery, values);
-            console.log('Formulaire créé avec succès');
-        }
-        catch (error) {
-            console.error("Erreur lors de l'insertion des données :", error);
-        }
-        finally {
-            yield client.end();
-        }
-    });
-}
+app.get('/', (req, res) => {
+    res.render('home', { pageTitle: 'home' });
+});
+app.get('/contact', (req, res) => {
+    res.render('contact', { pageTitle: 'contact' });
+});
 app.post('/submit-register', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userFirstName = req.body.user_firstname;
+    const userSurname = req.body.user_surname;
+    const userEmail = req.body.user_email;
+    const userConfirmation = req.body.user_confirmation;
+    const userPassword = req.body.user_password;
+    const userMessage = req.body.user_message;
     const client = new pg_1.Client(dbConfig);
+    console.log(req.body);
+    console.log('Données du formulaire :', userEmail, userPassword, userConfirmation, userSurname, userFirstName, userMessage);
     try {
         yield client.connect();
-        const userSurname = req.body.User_Surname;
-        const userFirstName = req.body.User_First_name;
-        const userEmail = req.body.User_Email;
-        const userPassword = req.body.User_Password;
-        const userMessage = req.body.User_Message;
-        const insertQuery = `INSERT INTO formuser (User_Surname, User_First_Name, User_Email, User_Password, User_Message)
-                         VALUES ($1, $2, $3, $4, $5)`;
-        const values = [userSurname, userFirstName, userEmail, userPassword, userMessage];
+        const insertQuery = `INSERT INTO formuser 
+        (user_surname, user_firstName, user_email, user_confirmation, user_password, user_message) 
+        VALUES ($1::text, $2::text, $3::text, $4::text, $5::text, $6::text) RETURNING user_id`;
+    
+        const values = [userSurname, userFirstName, userEmail, userConfirmation, userPassword, userMessage];
         const result = yield client.query(insertQuery, values);
-        if (result.rows.length > 0) {
-            console.log('Donnée formulaire insérée avec succès');
-            res.redirect('/');
+        if (result.rowCount !== null && result.rowCount > 0) {
+            res.status(200).send('Inscription réussie !');
         }
         else {
-            console.error("Erreur lors de l'insertion des données : Aucune ligne affectée");
-            res.status(500).send("Erreur lors de l'insertion des données");
+            res.status(500).send("Erreur lors de l'inscription");
         }
     }
     catch (error) {
@@ -111,3 +91,6 @@ app.post('/submit-register', (req, res) => __awaiter(void 0, void 0, void 0, fun
         yield client.end();
     }
 }));
+app.listen(port, () => {
+    console.log(`Le serveur fonctionne à http://localhost:${port}`);
+});
