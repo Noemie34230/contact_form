@@ -56,31 +56,49 @@ app.get('/', (req, res) => {
     res.render('home', { pageTitle: 'home' });
 });
 app.get('/contact', (req, res) => {
-    res.render('contact', { pageTitle: 'contact' });
+    res.render('contact', { pageTitle: 'contact', errors: [] });
 });
 app.post('/submit-register', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userFirstName = req.body.user_firstname;
     const userSurname = req.body.user_surname;
     const userEmail = req.body.user_email;
     const userConfirmation = req.body.user_confirmation;
-    const userPassword = req.body.user_password;
     const userMessage = req.body.user_message;
     const client = new pg_1.Client(dbConfig);
     console.log(req.body);
-    console.log('Données du formulaire :', userEmail, userPassword, userConfirmation, userSurname, userFirstName, userMessage);
+    console.log('Données du formulaire :', userEmail, userConfirmation, userSurname, userFirstName, userMessage);
+    // Array to store error messages
+    const errorMessages = [];
     try {
         yield client.connect();
-        const insertQuery = `INSERT INTO formuser 
-        (user_surname, user_firstName, user_email, user_confirmation, user_password, user_message) 
-        VALUES ($1::text, $2::text, $3::text, $4::text, $5::text, $6::text) RETURNING user_id`;
-    
-        const values = [userSurname, userFirstName, userEmail, userConfirmation, userPassword, userMessage];
-        const result = yield client.query(insertQuery, values);
-        if (result.rowCount !== null && result.rowCount > 0) {
-            res.status(200).send('Inscription réussie !');
+        // Ajout des regex de validations 
+        const nameRegex = /^[A-Za-zàäâéèêëïî-]+$/;
+        const emailRegex = /^[a-zA-Z0-9.-]+@[a-zA-Z0-9-]{2,}.[a-zA-Z]{2,3}$/;
+        if (!nameRegex.test(userSurname) || !nameRegex.test(userFirstName)) {
+            errorMessages.push('Le prénom et le nom de famille ne doivent contenir que des lettres.');
+        }
+        if (!emailRegex.test(userEmail)) {
+            errorMessages.push('L\'adresse e-mail n\'est pas valide.');
+        }
+        if (userEmail !== userConfirmation) {
+            errorMessages.push('Mail non confirmé');
+        }
+        if (errorMessages.length > 0) {
+            console.log('errors:', errorMessages);
+            res.status(401).render('contact', { pageTitle: 'contact', errors: errorMessages });
         }
         else {
-            res.status(500).send("Erreur lors de l'inscription");
+            const insertQuery = `INSERT INTO formuser 
+        (user_surname, user_firstName, user_email, user_confirmation, user_message) 
+        VALUES ($1::text, $2::text, $3::text, $4::text, $5::text)`;
+            const values = [userSurname, userFirstName, userEmail, userConfirmation, userMessage];
+            const result = yield client.query(insertQuery, values);
+            if (result.rowCount !== null && result.rowCount > 0) {
+                res.status(200).send('Formulaire envoyé avec succès');
+            }
+            else {
+                res.status(500).send("Erreur lors de l'envoi du formulaire");
+            }
         }
     }
     catch (error) {
