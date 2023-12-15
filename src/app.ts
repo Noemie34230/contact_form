@@ -5,7 +5,7 @@ import { Client } from 'pg';
 const app = express();
 const port = 3000;
 
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, './views'));
 app.set('view engine', 'pug');
 app.use('/styles', express.static(path.join(__dirname, 'styles')));
 app.use(express.json());

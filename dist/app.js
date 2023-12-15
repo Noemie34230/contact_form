@@ -75,7 +75,7 @@ app.post('/submit-register', (req, res) => __awaiter(void 0, void 0, void 0, fun
         const nameRegex = /^[A-Za-zàäâéèêëïî-]+$/;
         const emailRegex = /^[a-zA-Z0-9.-]+@[a-zA-Z0-9-]{2,}.[a-zA-Z]{2,3}$/;
         if (!nameRegex.test(userSurname) || !nameRegex.test(userFirstName)) {
-            errorMessages.push('Le prénom et le nom de famille ne doivent contenir que des lettres.');
+            errorMessages.push('Le prénom et le nom ne doivent contenir que des lettres.');
         }
         if (!emailRegex.test(userEmail)) {
             errorMessages.push('L\'adresse e-mail n\'est pas valide.');
