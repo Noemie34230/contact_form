@@ -3,27 +3,33 @@ block styles
 
 block content
   h1 Laissez-nous un message
-  p(class="paragraphe") Bienvenue sur notre formulaire de contact ! Nous sommes ravis de vous entendre. Pour nous faire part de vos questions, commentaires ou demandes, veuillez prendre un moment pour saisir votre message ci-dessous. N'hésitez pas à fournir autant de détails que possible afin que nous puissions vous aider de la manière la plus efficace. Nous sommes impatients de vous répondre et de vous offrir le meilleur service possible. Merci de prendre le temps de nous partager vos pensées!
-  
-  // Display individual error messages if they exist
-  if errors.length > 0
-    each error in errors
-      p(style='color: red;')= error
+  p(class="paragraphe") Bienvenue sur notre formulaire de contact ! Nous sommes ravis de vous entendre. Pour nous faire part de vos questions, commentaires ou demandes, veuillez prendre un moment pour saisir votre message ci-dessous. N'hésitez pas à fournir autant de détails que possible afin que nous puissions vous aider de la manière la plus efficace. Nous sommes impatients de vous répondre et de vous offrir le meilleur service possible. Merci de prendre le temps de nous partager vos pensées !
 
-  form(action='/submit-register' method="POST" class="formulaire")
+  form(action='/contact' method="POST" class="formulaire" novalidate)
     label(for='user_firstname' class='label') Prénom:
     input(type='text', id='user_firstname', name='user_firstname', required class="input", value= getfirstname, placeholder='Prénom')
-    
+    if errors && errors.firstname
+      span(class='error')= errors.firstname
+
     label(for='user_surname' class='label') Nom:
-    input(type='text', id='user_surname', name='user_surname', required class="input", value=getlastname, placeholder='Nom')
-    
+    input(type='text', id='user_surname', name='user_surname', required class="input", value=getsurname, placeholder='Nom')
+    if errors && errors.surname
+      span(class='error')= errors.surname
+
+
     label(for='user_email' class='label') Email :
-    input(type='email', id='user_email', name='user_email', required class="input", value= getemail, placeholder='Email' )
-    
+    input(type='email', id='user_email', name='user_email', required class="input",  value=getemail, placeholder='Email' )
+    if errors && errors.email
+      span(class='error')= errors.email
+
     label(for='user_confirmation' class='label') Confirmation email:
     input(type='email', id='user_confirmation', name='user_confirmation', required class="input", value= getconfirmation, placeholder='Confirmation email' )
-    
+    if errors && errors.confirm
+      span(class='error')= errors.confirm
+
     label(for='user_message' class='label') Message:
-    input(type='text', id='message', name='user_message', required class='input-message', value=getMessage, placeholder='150 characters max')
-    
+    input(type='text', id='message', name='user_message', required class='input-message', value=getMessage, placeholder='150 caractères max')
+    if errors && errors.message
+      span(class='error')= errors.message
+
     button(type='submit' class='button') Soumettre

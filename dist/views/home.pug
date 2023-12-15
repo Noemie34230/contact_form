@@ -3,11 +3,8 @@ block styles
 
 block content 
 
-h1 Tous les messages !
+h1 Bienvenue, vous pouvez nous laisser un message. 
 
-if user && user.messages && user.messages.length > 0
-      each message in user.messages
-            p(style='color: black;')= message.user_message
 
 form(action='/contact')
       button(type='submit' class='button') nous contacter
