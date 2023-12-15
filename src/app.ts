@@ -16,7 +16,7 @@ const dbConfig = {
   password: 'password',
   database: 'database',
   host: 'postgresdb',
-  port: 5432,
+  port: 5432
 };
 
 app.get('/', (req: Request, res: Response) => {
@@ -37,29 +37,22 @@ app.post('/contact', async (req, res) => {
   console.log(req.body);
   console.log('Données du formulaire :', userEmail, userConfirmation, userSurname, userFirstname, userMessage);
 
-
   try {
     await client.connect();
-    // Add regex validate input.
+    // Add regex to validate input.
     const nameRegex = /^[A-Za-zàäâéèêëïî-]+$/;
     const emailRegex = /^[a-zA-Z0-9.-]+@[a-zA-Z0-9-]{2,}.[a-zA-Z]{2,3}$/;
+
+    // key : value to string in object empty (with TypesScript : tks!)
     const errors: { [key: string]: string } = {};
 
-    if (!nameRegex.test(userSurname)) {
-      errors.surname = "Format du nom invalide";
-    }
-    if(!nameRegex.test(userFirstname)){
-      errors.firstname = "Format du prénom invalide"
-    }
-    if (!emailRegex.test(userEmail)) {
-      errors.email = " Format d'email invalide";
-    }
-    if (userEmail !== userConfirmation) {
-      errors.confirm = "Les deux emails ne sont pas identiques";
-    }
-    if (!nameRegex.test(userMessage)) {
-      errors.message = "Format de message invalide"
-    }
+    if (!nameRegex.test(userSurname)) { errors.surname = "Format du nom invalide" };
+    if (!nameRegex.test(userFirstname)) { errors.firstname = "Format du prénom invalide"};
+    if (!emailRegex.test(userEmail)) { errors.email = " Format d'email invalide"};
+    if (userEmail !== userConfirmation) { errors.confirm = "Les deux emails ne sont pas identiques"};
+    if (!nameRegex.test(userMessage)) { errors.message = "Format de message invalide"};
+    
+    // key[s] of object create with errors > 0 
     if (Object.keys(errors).length > 0) {
       console.log('Erreurs de validation détectées:', errors);
       return res.render('contact', {
