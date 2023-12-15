@@ -12,8 +12,8 @@
 In Git Bash : git clone https://github.com/Noemie34230/contact_form
 
 2 - Running Docker Compose :
-open docker
-docker-compose up
+- open docker
+- docker-compose up --build
 
 3-See the web site
 read http://localhost:3000/
