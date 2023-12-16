@@ -14,28 +14,28 @@ block content
 
   form(action='/contact', method="POST", class="formulaire", novalidate)
     label(for='user_firstname', class='label') Prénom:
-    input(type='text', id='user_firstname', name='user_firstname', required class="input", value= getfirstname, placeholder='Prénom')
-    if errors && errors.firstname
+    input(type='text', name='user_firstname', required class="input", value= getfirstname, placeholder='Prénom')
+    if errors.firstname
       span(class='error')= errors.firstname
 
     label(for='user_surname', class='label') Nom:
-    input(type='text', id='user_surname', name='user_surname', required class="input", value=getsurname, placeholder='Nom')
-    if errors && errors.surname
+    input(type='text', name='user_surname', required class="input", value=getsurname, placeholder='Nom')
+    if errors.surname
       span(class='error')= errors.surname
 
     label(for='user_email', class='label') Email :
-    input(type='email', id='user_email', name='user_email', required class="input",  value=getemail, placeholder='Email' )
-    if errors && errors.email
+    input(type='email', name='user_email', required class="input",  value=getemail, placeholder='Email' )
+    if errors.email
       span(class='error')= errors.email
 
     label(for='user_confirmation', class='label') Confirmation email:
-    input(type='email', id='user_confirmation', name='user_confirmation', required class="input", value= getconfirmation, placeholder='Confirmation email' )
-    if errors && errors.confirm
+    input(type='email', name='user_confirmation', required class="input", value= getconfirmation, placeholder='Confirmation email' )
+    if errors.confirm
       span(class='error')= errors.confirm
 
     label(for='user_message', class='label') Message:
-    input(type='text', id='message', name='user_message', required class='input-message', value=getMessage, placeholder='150 caractères max')
-    if errors && errors.message
+    input(type='text', name='user_message', required class='input-message', value=getMessage, placeholder='150 caractères max')
+    if errors.message
       span(class='error')= errors.message
 
     button(type='submit', class='button') Soumettre
