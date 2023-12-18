@@ -72,6 +72,7 @@ app.post('/contact', (req, res) => __awaiter(void 0, void 0, void 0, function* (
         // Add regex to validate input.
         const inputRegex = /^[A-Za-zàäâéèêëïî-]+$/;
         const emailRegex = /^[a-zA-Z0-9.-]+@[a-zA-Z0-9-]{2,}\.[a-zA-Z]{2,3}$/;
+        const messageRegex = /^[^<>]{1,150}$/;
         // key : value to string in object empty (with TypeScript: tks!)
         const errors = {};
         // Regex test
@@ -91,7 +92,7 @@ app.post('/contact', (req, res) => __awaiter(void 0, void 0, void 0, function* (
             errors.confirm = "Les deux emails ne sont pas identiques";
         }
         ;
-        if (!inputRegex.test(userMessage)) {
+        if (!messageRegex.test(userMessage)) {
             errors.message = "Format de message invalide";
         }
         ;
