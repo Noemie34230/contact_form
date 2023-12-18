@@ -38,14 +38,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const path = __importStar(require("path"));
 const pg_1 = require("pg");
+const dotenv = __importStar(require("dotenv"));
+const test = dotenv.config({ path: __dirname + '/.env' });
 const app = (0, express_1.default)();
 const port = 3000;
 const dbConfig = {
-    user: 'user',
-    password: 'password',
-    database: 'database',
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
     host: 'postgresdb',
-    port: 5432
+    port: 5432,
 };
 app.set('views', path.join(__dirname, './views'));
 app.set('view engine', 'pug');
@@ -72,6 +74,7 @@ app.post('/contact', (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const emailRegex = /^[a-zA-Z0-9.-]+@[a-zA-Z0-9-]{2,}\.[a-zA-Z]{2,3}$/;
         // key : value to string in object empty (with TypeScript: tks!)
         const errors = {};
+        // Regex test
         if (!inputRegex.test(userSurname)) {
             errors.surname = "Format du nom invalide";
         }
@@ -95,8 +98,7 @@ app.post('/contact', (req, res) => __awaiter(void 0, void 0, void 0, function* (
         // key[s] of object create with errors > 0 
         if (Object.keys(errors).length > 0) {
             return res.render('contact', {
-                pageTitle: 'contact',
-                errors,
+                pageTitle: 'contact', errors, // contact errors
                 getfirstname: userFirstname,
                 getsurname: userSurname,
                 getemail: userEmail,
