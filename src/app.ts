@@ -1,15 +1,17 @@
 import express, { Request, Response } from 'express';
 import * as path from 'path';
 import { Client } from 'pg';
+import * as dotenv from 'dotenv';
 
+const test = dotenv.config({ path: __dirname + '/.env' })
 const app = express();
 const port = 3000;
 const dbConfig = {
-  user: 'user',
-  password: 'password',
-  database: 'database',
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
   host: 'postgresdb',
-  port: 5432
+  port: 5432,
 };
 
 app.set('views', path.join(__dirname, './views'));
