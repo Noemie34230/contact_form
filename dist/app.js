@@ -98,8 +98,10 @@ app.post('/contact', (req, res) => __awaiter(void 0, void 0, void 0, function* (
         ;
         // key[s] of object create with errors > 0 
         if (Object.keys(errors).length > 0) {
+            console.log('Erreurs de validation détectées:', errors);
             return res.render('contact', {
-                pageTitle: 'contact', errors, // contact errors
+                pageTitle: 'contact',
+                errors,
                 getfirstname: userFirstname,
                 getsurname: userSurname,
                 getemail: userEmail,
@@ -108,6 +110,17 @@ app.post('/contact', (req, res) => __awaiter(void 0, void 0, void 0, function* (
             });
         }
         else {
+            const insertQuery = `INSERT INTO formuser 
+      (user_surname, user_firstName, user_email, user_confirmation, user_message) 
+      VALUES ($1::text, $2::text, $3::text, $4::text, $5::text)`;
+            const values = [userSurname, userFirstname, userEmail, userConfirmation, userMessage];
+            const result = yield client.query(insertQuery, values);
+            if (result.rowCount !== null && result.rowCount > 0) {
+                res.status(200).send('Formulaire envoyé avec succès');
+            }
+            else {
+                res.status(500).send("Erreur lors de l'envoi du formulaire");
+            }
             // If there are no errors, send a success response
             res.status(200).send('Formulaire envoyé avec succès');
         }
